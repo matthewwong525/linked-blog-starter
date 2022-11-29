@@ -11,14 +11,16 @@ import Head from 'next/head'
 import { CMS_NAME } from '../../lib/constants'
 import markdownToHtml from '../../lib/markdownToHtml'
 import type PostType from '../../interfaces/post'
+import path from 'path'
 
 type Props = {
   post: PostType
   morePosts: PostType[]
   preview?: boolean
+  slug: string[]
 }
 
-export default function Post({ post, morePosts, preview }: Props) {
+export default function Post({ post, morePosts, preview  }: Props) {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
@@ -55,7 +57,7 @@ export default function Post({ post, morePosts, preview }: Props) {
 
 type Params = {
   params: {
-    slug: string
+    slug: string[]
   }
 }
 
@@ -83,12 +85,12 @@ export async function getStaticProps({ params }: Params) {
 
 export async function getStaticPaths() {
   const posts = getAllPosts(['slug'])
-
   return {
     paths: posts.map((post) => {
+    const slugArr = post.slug.split(path.sep)
       return {
         params: {
-          slug: post.slug,
+          slug: slugArr,
         },
       }
     }),

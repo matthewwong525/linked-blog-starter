@@ -11,19 +11,19 @@ const getFilesRecursively = (directory: string) => {
     for (const file of filesInDirectory) {
       const absolute = path.join(dir, file);
       if (fs.statSync(absolute).isDirectory()) {
-          recusiveFindFiles(absolute);
+        recusiveFindFiles(absolute);
       } else {
-          files.push(path.relative(directory, absolute));
+        files.push(path.relative(directory, absolute));
       }
     }
   };
   recusiveFindFiles(directory);
-  return files;
+  return files as string[];
 }
 
 
-export function getPostBySlug(slug: string, fields: string[] = []) {
-  const realSlug = slug.replace(/\.md$/, '')
+export function getPostBySlug(slug: string[], fields: string[] = []) {
+  const realSlug = path.join(...slug).replace(/\.md$/, '')
   const fullPath = path.join(postsDirectory, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
@@ -54,9 +54,8 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
 export function getAllPosts(fields: string[] = []) {
   let files = getFilesRecursively(postsDirectory);
   const posts = files
-    .map((slug) => getPostBySlug(slug, fields))
+    .map((slug) => getPostBySlug(slug.split(path.sep), fields))
     // sort posts by date in descending order
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
-  return []
 }

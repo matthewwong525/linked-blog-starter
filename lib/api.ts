@@ -1,16 +1,30 @@
 import fs from 'fs'
-import { join } from 'path'
+import path from 'path'
 import matter from 'gray-matter'
 
-const postsDirectory = join(process.cwd(), '_posts')
+const postsDirectory = path.join(process.cwd(), '_posts')
 
-export function getPostSlugs() {
-  return fs.readdirSync(postsDirectory)
+const getFilesRecursively = (directory: string) => {
+  let files = [];
+  const recusiveFindFiles = (dir: string) => {
+    const filesInDirectory = fs.readdirSync(dir);
+    for (const file of filesInDirectory) {
+      const absolute = path.join(dir, file);
+      if (fs.statSync(absolute).isDirectory()) {
+          recusiveFindFiles(absolute);
+      } else {
+          files.push(path.relative(directory, absolute));
+      }
+    }
+  };
+  recusiveFindFiles(directory);
+  return files;
 }
+
 
 export function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md$/, '')
-  const fullPath = join(postsDirectory, `${realSlug}.md`)
+  const fullPath = path.join(postsDirectory, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
 
@@ -38,10 +52,11 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
 }
 
 export function getAllPosts(fields: string[] = []) {
-  const slugs = getPostSlugs()
-  const posts = slugs
+  let files = getFilesRecursively(postsDirectory);
+  const posts = files
     .map((slug) => getPostBySlug(slug, fields))
     // sort posts by date in descending order
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
+  return []
 }

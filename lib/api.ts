@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 
-const postsDirectory = path.join(process.cwd(), '_posts')
+const mdDir = path.join(process.cwd(), '_commonMD')
 
 const getMDFilesRecursively = (directory: string) => {
   let files = [];
@@ -24,7 +24,7 @@ const getMDFilesRecursively = (directory: string) => {
 
 export function getPostBySlug(slug: string[], fields: string[] = []) {
   const realSlug = path.join(...slug).replace(/\.md$/, '')
-  const fullPath = path.join(postsDirectory, `${realSlug}.md`)
+  const fullPath = path.join(mdDir, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
 
@@ -52,7 +52,7 @@ export function getPostBySlug(slug: string[], fields: string[] = []) {
 }
 
 export function getAllPosts(fields: string[] = []) {
-  let files = getMDFilesRecursively(postsDirectory);
+  let files = getMDFilesRecursively(mdDir);
   const posts = files
     .map((slug) => getPostBySlug(slug.split(path.sep), fields))
     // sort posts by date in descending order

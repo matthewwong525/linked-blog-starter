@@ -49,11 +49,11 @@ async function commonMDToHast(markdown: string) {
   return hastObj;
 }
 
-async function getMDExcerpt(markdown: string) {
+async function getMDExcerpt(markdown: string, length: number = 300) {
   const file = await remark()
     .use(strip)
     .process(markdown)
-  return file.toString().slice(0, 300);
+  return file.toString().slice(0, length);
 }
 
 async function getSlugMapping(hastNode: Root, rootSlug: string[]) {

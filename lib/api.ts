@@ -21,9 +21,8 @@ const getMDFilesRecursively = (directory: string) => {
   return files as string[];
 }
 
-
-export function getPostBySlug(slug: string[], fields: string[] = []) {
-  const realSlug = path.join(...slug).replace(/\.md$/, '')
+export function getPostBySlug(slug: string, fields: string[] = []) {
+  const realSlug = slug.replace(/\.md$/, '')
   const fullPath = path.join(mdDir, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
@@ -54,8 +53,31 @@ export function getPostBySlug(slug: string[], fields: string[] = []) {
 export function getAllPosts(fields: string[] = []) {
   let files = getMDFilesRecursively(mdDir);
   const posts = files
-    .map((slug) => getPostBySlug(slug.split(path.sep), fields))
+    .map((slug) => getPostBySlug(slug, fields))
     // sort posts by date in descending order
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
+}
+
+export function getLinksMapping() {
+  const linksMapping = new Map<string, string[]>();
+  const postsMapping = new Map(getAllPosts(['slug', 'content']).map(i => [i.slug, i.content]));
+  const allSlugs = new Set(postsMapping.keys());
+  postsMapping.forEach((content, slug) => {
+    const mdLink = /\[[^\[\]]+\]\(([^\(\)]+)\)/g
+    const matches = Array.from(content.matchAll(mdLink))
+    const linkSlugs = []
+    for (var m of matches) {
+      const linkSlug = getSlugFromHref(slug, m[1])
+      if (allSlugs.has(linkSlug)) {
+        linkSlugs.push(linkSlug);
+      }
+    }
+    linksMapping[slug] = linkSlugs
+  });
+  return linksMapping;
+}
+
+export function getSlugFromHref (currSlug: string, href: string) {
+  return decodeURI(path.join(...currSlug.split(path.sep).slice(0, -1), href)).replace(/\.md$/, '')
 }

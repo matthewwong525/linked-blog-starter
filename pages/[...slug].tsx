@@ -5,22 +5,28 @@ import PostBody from '../components/post-body'
 import Header from '../components/header'
 import PostHeader from '../components/post-header'
 import Layout from '../components/layout'
-import { getPostBySlug, getAllPosts } from '../lib/api'
+import { getPostBySlug, getAllPosts, getLinksMapping } from '../lib/api'
 import PostTitle from '../components/post-title'
 import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
-import markdownToHtml from '../lib/markdownToHtml'
+import { getMDExcerpt, markdownToHtml } from '../lib/markdownToHtml'
 import type PostType from '../interfaces/post'
 import path from 'path'
+
+type Items = {
+  title: string,
+  content: string,
+}
 
 type Props = {
   post: PostType
   morePosts: PostType[]
   preview?: boolean
-  slug: string[]
+  slug: string
+  backlinks: { [k: string]: Items }
 }
 
-export default function Post({ post, morePosts, preview  }: Props) {
+export default function Post({ post, morePosts, preview, backlinks }: Props) {
   const router = useRouter()
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />
@@ -58,11 +64,13 @@ export default function Post({ post, morePosts, preview  }: Props) {
 type Params = {
   params: {
     slug: string[]
+    backlinks: string[]
   }
 }
 
 export async function getStaticProps({ params }: Params) {
-  const post = getPostBySlug(params.slug, [
+  const slug = path.join(...params.slug)
+  const post = getPostBySlug(slug, [
     'title',
     'date',
     'slug',
@@ -71,7 +79,14 @@ export async function getStaticProps({ params }: Params) {
     'ogImage',
     'coverImage',
   ])
-  const content = await markdownToHtml(post.content || '', params.slug)
+  const content = await markdownToHtml(post.content || '', slug)
+  const linkMapping = getLinksMapping()
+  const backlinks = Object.keys(linkMapping).filter(k => linkMapping[k].includes(post.slug)) 
+  const backlinkNodes = Object.fromEntries(await Promise.all(backlinks.map(async (slug) => {
+    let post = getPostBySlug(slug, ['title', 'content']);
+    post.content = await getMDExcerpt(post.content);
+    return [slug, post]
+  })));
 
   return {
     props: {
@@ -79,6 +94,7 @@ export async function getStaticProps({ params }: Params) {
         ...post,
         content,
       },
+      backlinks: backlinkNodes,
     },
   }
 }
@@ -87,12 +103,11 @@ export async function getStaticPaths() {
   const posts = getAllPosts(['slug'])
   return {
     paths: posts.map((post) => {
-    const slugArr = post.slug.split(path.sep)
       return {
         params: {
-          slug: slugArr,
+          slug: post.slug.split(path.sep),
         },
-      }
+      } 
     }),
     fallback: false,
   }

@@ -6,21 +6,23 @@ import remarkRehype from 'remark-rehype'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeRewrite from 'rehype-rewrite';
 import rehypeStringify from 'rehype-stringify'
-import { getPostBySlug } from './api'
+import { getLinksMapping, getPostBySlug, getSlugFromHref } from './api'
 import strip from 'strip-markdown'
-import {fromHtml} from 'hast-util-from-html'
-import path from 'path'
-import {Element, selectAll} from 'hast-util-select'
-import { Root } from 'hast-util-from-html/lib'
+import {Element} from 'hast-util-select'
 
 
-export default async function markdownToHtml(markdown: string, rootSlug: string[]) {
+export async function markdownToHtml(markdown: string, currSlug: string) {
   // remove `.md` from links
   markdown = markdown.replaceAll(/(\[[^\[\]]+\]\([^\(\)]+)(\.md)(\))/g, "$1$3");
   
-  // get common MD hast
-  const hastObj = await commonMDToHast(markdown);
-  const slugMapping = await getSlugMapping(hastObj, rootSlug);
+  // get mapping of current links
+  const links = getLinksMapping()[currSlug] as string[]
+  const linkNodeMapping = new Map<string, Element>();
+  for (const l of links) {
+    const post = getPostBySlug(l, ['title', 'content']);
+    const node = await createNoteNode(post.title, post.content)
+    linkNodeMapping[l] = node
+  }
 
   const file = await unified()
     .use(remarkParse)
@@ -29,7 +31,7 @@ export default async function markdownToHtml(markdown: string, rootSlug: string[
     .use(rehypeSanitize)
     .use(rehypeRewrite, {
       selector: 'a',
-      rewrite: async (node) => rewriteLinkNodes(node, slugMapping)
+      rewrite: async (node) => rewriteLinkNodes(node, linkNodeMapping, currSlug)
     })
     .use(rehypeStringify)
     .process(markdown)
@@ -37,45 +39,14 @@ export default async function markdownToHtml(markdown: string, rootSlug: string[
   return htmlStr;
 }
 
-async function commonMDToHast(markdown: string) {
-  const file = await unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype)
-    .use(rehypeSanitize)
-    .use(rehypeStringify)
-    .process(markdown)
-  let hastObj = fromHtml(file.toString())
-  return hastObj;
-}
-
-async function getMDExcerpt(markdown: string, length: number = 300) {
+export async function getMDExcerpt(markdown: string, length: number = 300) {
   const file = await remark()
     .use(strip)
     .process(markdown)
   return file.toString().slice(0, length);
 }
 
-async function getSlugMapping(hastNode: Root, rootSlug: string[]) {
-  const allAnchors = selectAll('a', hastNode);
-  const slugMapping = new Map<string, Element>();
-  for (const anchors of allAnchors) {
-    const href = anchors.properties.href.toString();
-    const hrefSlug = decodeURI(href).split(path.sep);
-    const linkSlug = [...rootSlug.slice(0, -1), ...hrefSlug];
-    try {
-      const items = getPostBySlug(linkSlug, ['title', 'content', 'date']);
-      if (items) {
-        slugMapping[href] = await createNoteNode(items.title, items.content)
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
-  return slugMapping
-}
-
-async function createNoteNode(title, content) {
+export async function createNoteNode(title: string, content: string) {
   const mdContentStr = await getMDExcerpt(content);
   return {
     type: 'element',
@@ -99,12 +70,13 @@ async function createNoteNode(title, content) {
         ],
       },
     ]
-  }
+  } as Element
 }
 
-function rewriteLinkNodes (node, slugMapping: Map<string, any>) {
+function rewriteLinkNodes (node, linkNodeMapping: Map<string, any>, currSlug) {
   if (node.type === 'element' && node.tagName === 'a') {
-    const noteCardNode = slugMapping[node.properties.href]
+    const slug = getSlugFromHref(currSlug, node.properties.href)
+    const noteCardNode = linkNodeMapping[slug]
     if (noteCardNode) {
       const anchorNode = {...node}
       anchorNode.properties.className = 'internal-link'

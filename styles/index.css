@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.note-preview {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 2px;
+  border-color: black;
+  width: 300px;
+  height: 200px;
+  text-overflow: hidden;
+  z-index: 99999;
+  left:0;
+}
+
+.note-preview > .note-preview-title {
+  display: block;
+  font-weight: bold;
+}
+.note-preview > .note-preview-content {
+  display: block;
+}
+.internal-link:hover + .note-preview {
+  display: block;
+}
+.internal-link-container {
+  position: relative;
+}

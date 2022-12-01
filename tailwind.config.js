@@ -2,6 +2,9 @@
 module.exports = {
   content: ['./components/**/*.tsx', './pages/**/*.tsx'],
   theme: {
+    fontFamily: {
+      'sans': '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji"'
+    },
     extend: {
       colors: {
         'accent-1': '#FAFAFA',

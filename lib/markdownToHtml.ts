@@ -9,6 +9,9 @@ import rehypeStringify from 'rehype-stringify'
 import { getLinksMapping, getPostBySlug, getSlugFromHref } from './api'
 import strip from 'strip-markdown'
 import {Element} from 'hast-util-select'
+import { renderToStaticMarkup } from "react-dom/server"
+import NotePreview from '../components/note-preview'
+import { fromHtml } from 'hast-util-from-html'
 
 
 export async function markdownToHtml(markdown: string, currSlug: string) {
@@ -48,29 +51,9 @@ export async function getMDExcerpt(markdown: string, length: number = 300) {
 
 export async function createNoteNode(title: string, content: string) {
   const mdContentStr = await getMDExcerpt(content);
-  return {
-    type: 'element',
-    tagName: 'span',
-    properties: { className: 'note-preview'},
-    children: [
-      {
-        type: 'element',
-        tagName: 'span',
-        properties: { className: 'note-preview-title' },
-        children: [
-          {type: 'text', value: title}
-        ],
-      },
-      {
-        type: 'element',
-        tagName: 'span',
-        properties: { className: 'note-preview-content' },
-        children: [
-          {type: 'text', value: mdContentStr}
-        ],
-      },
-    ]
-  } as Element
+  const htmlStr = renderToStaticMarkup(NotePreview({ title, content: mdContentStr }))
+  const noteNode = fromHtml(htmlStr);
+  return noteNode;
 }
 
 function rewriteLinkNodes (node, linkNodeMapping: Map<string, any>, currSlug) {

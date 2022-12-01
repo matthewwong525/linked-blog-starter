@@ -12,6 +12,7 @@ import { CMS_NAME } from '../lib/constants'
 import { getMDExcerpt, markdownToHtml } from '../lib/markdownToHtml'
 import type PostType from '../interfaces/post'
 import path from 'path'
+import Backlinks from '../components/backlinks'
 
 type Items = {
   title: string,
@@ -52,7 +53,17 @@ export default function Post({ post, morePosts, preview, backlinks }: Props) {
                 date={post.date}
                 author={post.author}
               />
-              <PostBody content={post.content} />
+              <div className="max-w-2xl mx-auto">
+                <PostBody content={post.content} />
+                {
+                  (Object.keys(backlinks).length > 1) && (
+                    <>
+                      <hr className="my-10"/>
+                      <Backlinks backlinks={backlinks} />
+                    </>
+                  )
+                }
+              </div>
             </article>
           </>
         )}
@@ -81,7 +92,7 @@ export async function getStaticProps({ params }: Params) {
   ])
   const content = await markdownToHtml(post.content || '', slug)
   const linkMapping = getLinksMapping()
-  const backlinks = Object.keys(linkMapping).filter(k => linkMapping[k].includes(post.slug)) 
+  const backlinks = Object.keys(linkMapping).filter(k => linkMapping[k].includes(post.slug) && k !== post.slug)
   const backlinkNodes = Object.fromEntries(await Promise.all(backlinks.map(async (slug) => {
     let post = getPostBySlug(slug, ['title', 'content']);
     post.content = await getMDExcerpt(post.content);

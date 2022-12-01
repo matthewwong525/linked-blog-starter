@@ -6,7 +6,7 @@ import remarkRehype from 'remark-rehype'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeRewrite from 'rehype-rewrite';
 import rehypeStringify from 'rehype-stringify'
-import { getLinksMapping, getPostBySlug, getSlugFromHref } from './api'
+import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
 import strip from 'strip-markdown'
 import {Element} from 'hast-util-select'
 import { renderToStaticMarkup } from "react-dom/server"
@@ -15,9 +15,8 @@ import { fromHtml } from 'hast-util-from-html'
 
 
 export async function markdownToHtml(markdown: string, currSlug: string) {
-  // remove `.md` from links
-  markdown = markdown.replaceAll(/(\[[^\[\]]+\]\([^\(\)]+)(\.md)(\))/g, "$1$3");
-  
+  markdown = updateMarkdownLinks(markdown, currSlug);
+
   // get mapping of current links
   const links = getLinksMapping()[currSlug] as string[]
   const linkNodeMapping = new Map<string, Element>();

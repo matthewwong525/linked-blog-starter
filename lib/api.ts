@@ -1,25 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
+import { getFilesRecursively } from './modules/find-files-recusively.mjs'
 
 const mdDir = path.join(process.cwd(), '_commonMD')
-
-const getMDFilesRecursively = (directory: string) => {
-  let files = [];
-  const recusiveFindFiles = (dir: string) => {
-    const filesInDirectory = fs.readdirSync(dir);
-    for (const file of filesInDirectory) {
-      const absolute = path.join(dir, file);
-      if (fs.statSync(absolute).isDirectory()) {
-        recusiveFindFiles(absolute);
-      } else if (path.extname(absolute) === ".md") {
-        files.push(path.relative(directory, absolute));
-      }
-    }
-  };
-  recusiveFindFiles(directory);
-  return files as string[];
-}
 
 export function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md$/, '')
@@ -51,7 +35,7 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
 }
 
 export function getAllPosts(fields: string[] = []) {
-  let files = getMDFilesRecursively(mdDir);
+  let files = getFilesRecursively(mdDir, /\.md/);
   const posts = files
     .map((slug) => getPostBySlug(slug, fields))
     // sort posts by date in descending order
@@ -80,4 +64,22 @@ export function getLinksMapping() {
 
 export function getSlugFromHref (currSlug: string, href: string) {
   return decodeURI(path.join(...currSlug.split(path.sep).slice(0, -1), href)).replace(/\.md$/, '')
+}
+
+export function updateMarkdownLinks(markdown: string, currSlug: string) {
+  // remove `.md` from links
+  markdown = markdown.replaceAll(/(\[[^\[\]]+\]\([^\(\)]+)(\.md)(\))/g, "$1$3");
+
+  // update image links
+  markdown = markdown.replaceAll(/(\[[^\[\]]*\]\()([^\(\)]+)(\))/g, (m, m1, m2, m3) => {
+    const relLink = m2
+    const slugDir = path.join(...currSlug.split(path.sep).slice(0, -1))
+    const fileSlug = path.join(mdDir, path.dirname(slugDir), relLink)
+    if (fs.existsSync(fileSlug)) {
+      const imgPath = path.join('./md_assets', relLink)
+      return `${m1}${imgPath}${m3}`
+    }
+    return m;
+  });
+  return markdown
 }

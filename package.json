@@ -1,7 +1,10 @@
 {
   "private": true,
   "scripts": {
+    "copyimages": "node ./lib/modules/copy-images.mjs",
+    "predev": "npm run copyimages",
     "dev": "next",
+    "prebuild": "npm run copyimages",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc"
@@ -9,6 +12,7 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "date-fns": "^2.28.0",
+    "fs-extra": "^11.1.0",
     "gray-matter": "^4.0.3",
     "hast-util-from-html": "^1.0.0",
     "hast-util-select": "^5.0.2",

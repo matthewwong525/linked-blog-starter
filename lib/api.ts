@@ -3,7 +3,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import { getFilesRecursively } from './modules/find-files-recusively.mjs'
 
-const mdDir = path.join(process.cwd(), '_commonMD')
+const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR)
 
 export function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md$/, '')
@@ -76,7 +76,8 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
     const slugDir = path.join(...currSlug.split(path.sep).slice(0, -1))
     const fileSlug = path.join(mdDir, path.dirname(slugDir), relLink)
     if (fs.existsSync(fileSlug)) {
-      const imgPath = path.join('./md_assets', relLink)
+      const relAssetDir = path.relative('./public', process.env.MD_ASSET_DIR)
+      const imgPath = path.join(relAssetDir, relLink)
       return `${m1}${imgPath}${m3}`
     }
     return m;

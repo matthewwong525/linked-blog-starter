@@ -12,6 +12,7 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "date-fns": "^2.28.0",
+    "dotenv": "^16.0.3",
     "fs-extra": "^11.1.0",
     "gray-matter": "^4.0.3",
     "hast-util-from-html": "^1.0.0",

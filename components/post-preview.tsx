@@ -42,7 +42,7 @@ const PostPreview = ({
           <DateFormatter dateString={date} />
         </div>
       )}
-      <p className="text-lg leading-relaxed mb-4 whitespace-pre-line">{excerpt}</p>
+      <p className="text-lg leading-relaxed mb-4 max-h-[300px] white whitespace-pre-line truncate">{excerpt}</p>
       {author && (<Avatar name={author.name} picture={author.picture} />)}
     </div>
   )

@@ -16,7 +16,7 @@ import Backlinks from '../components/backlinks'
 
 type Items = {
   title: string,
-  content: string,
+  excerpt: string,
 }
 
 type Props = {
@@ -81,7 +81,7 @@ type Params = {
 
 export async function getStaticProps({ params }: Params) {
   const slug = path.join(...params.slug)
-  const post = getPostBySlug(slug, [
+  const post = await getPostBySlug(slug, [
     'title',
     'date',
     'slug',
@@ -91,11 +91,10 @@ export async function getStaticProps({ params }: Params) {
     'coverImage',
   ])
   const content = await markdownToHtml(post.content || '', slug)
-  const linkMapping = getLinksMapping()
+  const linkMapping = await getLinksMapping()
   const backlinks = Object.keys(linkMapping).filter(k => linkMapping[k].includes(post.slug) && k !== post.slug)
   const backlinkNodes = Object.fromEntries(await Promise.all(backlinks.map(async (slug) => {
-    let post = getPostBySlug(slug, ['title', 'content']);
-    post.content = await getMDExcerpt(post.content);
+    const post = await getPostBySlug(slug, ['title', 'excerpt']);
     return [slug, post]
   })));
 
@@ -111,7 +110,7 @@ export async function getStaticProps({ params }: Params) {
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts(['slug'])
+  const posts = await getAllPosts(['slug'])
   return {
     paths: posts.map((post) => {
       return {

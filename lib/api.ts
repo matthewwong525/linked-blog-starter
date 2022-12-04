@@ -1,15 +1,16 @@
 import fs from 'fs'
-import path from 'path'
+import path, { parse } from 'path'
 import matter from 'gray-matter'
 import { getFilesRecursively } from './modules/find-files-recusively.mjs'
+import { getMDExcerpt } from './markdownToHtml'
+import PostType from '../interfaces/post.js'
 
 const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR)
 
-export function getPostBySlug(slug: string, fields: string[] = []) {
+export async function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md$/, '')
   const fullPath = path.join(mdDir, `${realSlug}.md`)
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const { data, content } = matter(fileContents)
+  const data = await parseFileToObj(fullPath);
 
   type Items = {
     [key: string]: string
@@ -22,30 +23,42 @@ export function getPostBySlug(slug: string, fields: string[] = []) {
     if (field === 'slug') {
       items[field] = realSlug
     }
-    if (field === 'content') {
-      items[field] = content
-    }
 
     if (typeof data[field] !== 'undefined') {
       items[field] = data[field]
     }
   })
-
   return items
 }
 
-export function getAllPosts(fields: string[] = []) {
+async function parseFileToObj(path: string) {
+  const fileContents = fs.readFileSync(path, 'utf8')
+  const { data, content } = matter(fileContents)
+
+  data['content'] = content
+
+  // modify obj
+  if (typeof data['excerpt'] === 'undefined') {
+    data['excerpt'] = await getMDExcerpt(content, 500);
+  }
+  if (typeof data['date'] !== 'undefined') {
+    data['date'] = data['date'].toString()
+  }
+  return data
+}
+
+export async function getAllPosts(fields: string[] = []) {
   let files = getFilesRecursively(mdDir, /\.md/);
-  const posts = files
-    .map((slug) => getPostBySlug(slug, fields))
+  let posts = await Promise.all(files
+    .map((slug) => getPostBySlug(slug, fields)))
     // sort posts by date in descending order
-    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
+  posts = posts.sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
 }
 
-export function getLinksMapping() {
+export async function getLinksMapping() {
   const linksMapping = new Map<string, string[]>();
-  const postsMapping = new Map(getAllPosts(['slug', 'content']).map(i => [i.slug, i.content]));
+  const postsMapping = new Map((await getAllPosts(['slug', 'content'])).map(i => [i.slug, i.content]));
   const allSlugs = new Set(postsMapping.keys());
   postsMapping.forEach((content, slug) => {
     const mdLink = /\[[^\[\]]+\]\(([^\(\)]+)\)/g

@@ -4,7 +4,7 @@ type Props = {
   backlinks: {
     [k: string]: {
       title: string
-      content: string
+      excerpt: string
     }
 }
 }
@@ -17,7 +17,7 @@ const Backlinks = ({ backlinks }: Props) => {
         {Object.keys(backlinks).map((slug) => {
           const post = backlinks[slug]
           return (
-            <NotePreview title={post.title} content={post.content}/>
+            <NotePreview title={post.title} content={post.excerpt}/>
           )
         })}
       </div>

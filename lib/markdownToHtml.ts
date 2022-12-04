@@ -18,10 +18,10 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   markdown = updateMarkdownLinks(markdown, currSlug);
 
   // get mapping of current links
-  const links = getLinksMapping()[currSlug] as string[]
+  const links = (await getLinksMapping())[currSlug] as string[]
   const linkNodeMapping = new Map<string, Element>();
   for (const l of links) {
-    const post = getPostBySlug(l, ['title', 'content']);
+    const post = await getPostBySlug(l, ['title', 'content']);
     const node = await createNoteNode(post.title, post.content)
     linkNodeMapping[l] = node
   }

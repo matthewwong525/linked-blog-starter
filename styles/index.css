@@ -16,3 +16,9 @@
 .internal-link-container {
   position: relative;
 }
+.internal-link:hover {
+  text-decoration: underline;
+}
+.internal-link {
+  color: #0969da
+}

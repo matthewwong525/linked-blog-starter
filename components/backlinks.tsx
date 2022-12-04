@@ -7,7 +7,7 @@ type Props = {
       title: string
       excerpt: string
     }
-}
+  }
 }
 
 const Backlinks = ({ backlinks }: Props) => {

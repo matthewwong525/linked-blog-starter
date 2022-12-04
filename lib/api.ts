@@ -31,8 +31,8 @@ export async function getPostBySlug(slug: string, fields: string[] = []) {
   return items
 }
 
-async function parseFileToObj(path: string) {
-  const fileContents = fs.readFileSync(path, 'utf8')
+async function parseFileToObj(pathToObj: string) {
+  const fileContents = fs.readFileSync(pathToObj, 'utf8')
   const { data, content } = matter(fileContents)
 
   data['content'] = content
@@ -40,6 +40,9 @@ async function parseFileToObj(path: string) {
   // modify obj
   if (typeof data['excerpt'] === 'undefined') {
     data['excerpt'] = await getMDExcerpt(content, 500);
+  }
+  if (typeof data['title'] === 'undefined') {
+    data['title'] = decodeURI(path.basename(pathToObj, '.md'))
   }
   if (typeof data['date'] !== 'undefined') {
     data['date'] = data['date'].toString()

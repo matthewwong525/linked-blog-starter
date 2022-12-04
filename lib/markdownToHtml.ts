@@ -41,7 +41,7 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   return htmlStr;
 }
 
-export async function getMDExcerpt(markdown: string, length: number = 300) {
+export async function getMDExcerpt(markdown: string, length: number = 500) {
   const file = await remark()
     .use(strip)
     .process(markdown)

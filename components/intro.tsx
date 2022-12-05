@@ -8,7 +8,7 @@ const Intro = () => {
         Blog.
       </h1>
       <h4 className="text-center md:text-left text-lg mt-5 md:pl-8">
-        A <InternalLink href="test2/another note">statically generated blog</InternalLink> example using{' '}
+        A <InternalLink href="hello-world">statically generated blog</InternalLink> example using{' '}
         <a
           href="https://nextjs.org/"
           className="underline hover:text-blue-600 duration-200 transition-colors"

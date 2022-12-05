@@ -9,7 +9,7 @@ type Props = {
   children?: React.ReactNode
 }
 
-const InternalLink = ({ href, children }: Props) => {
+const PreviewLink = ({ href, children }: Props) => {
   const { data } = useSWR(`/api/post-preview/${href}`, fetcher)
   return (
     <span className="internal-link-container">
@@ -19,4 +19,4 @@ const InternalLink = ({ href, children }: Props) => {
   );
 }
 
-export default InternalLink;
+export default PreviewLink;

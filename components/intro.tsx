@@ -1,5 +1,5 @@
 import { CMS_NAME } from '../lib/constants'
-import InternalLink from './internal-link'
+import PreviewLink from './preview-link'
 
 const Intro = () => {
   return (
@@ -8,7 +8,7 @@ const Intro = () => {
         Blog.
       </h1>
       <h4 className="text-center md:text-left text-lg mt-5 md:pl-8">
-        A <InternalLink href="hello-world">statically generated blog</InternalLink> example using{' '}
+        A <PreviewLink href="hello-world">statically generated blog</PreviewLink> example using{' '}
         <a
           href="https://nextjs.org/"
           className="underline hover:text-blue-600 duration-200 transition-colors"

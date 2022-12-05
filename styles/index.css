@@ -5,7 +5,7 @@
 .internal-link-container > .note-preview {
   display: none;
   position: absolute;
-  width: 300px;
+  width: 350px;
   z-index: 99999;
   left:0;
 }

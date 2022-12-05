@@ -56,7 +56,7 @@ export default function Post({ post, morePosts, preview, backlinks }: Props) {
               <div className="max-w-2xl mx-auto">
                 <PostBody content={post.content} />
                 {
-                  (Object.keys(backlinks).length > 1) && (
+                  (Object.keys(backlinks).length > 0) && (
                     <>
                       <hr className="my-10"/>
                       <Backlinks backlinks={backlinks} />

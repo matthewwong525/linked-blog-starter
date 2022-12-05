@@ -7,7 +7,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeRewrite from 'rehype-rewrite';
 import rehypeStringify from 'rehype-stringify'
 import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } from './api'
-import strip from 'strip-markdown'
+import removeMd from 'remove-markdown'
 import {Element} from 'hast-util-select'
 import { renderToStaticMarkup } from "react-dom/server"
 import NotePreview from '../components/note-preview'
@@ -18,11 +18,11 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   markdown = updateMarkdownLinks(markdown, currSlug);
 
   // get mapping of current links
-  const links = (await getLinksMapping())[currSlug] as string[]
+  const links = (getLinksMapping())[currSlug] as string[]
   const linkNodeMapping = new Map<string, Element>();
   for (const l of links) {
-    const post = await getPostBySlug(l, ['title', 'content']);
-    const node = await createNoteNode(post.title, post.content)
+    const post = getPostBySlug(l, ['title', 'content']);
+    const node = createNoteNode(post.title, post.content)
     linkNodeMapping[l] = node
   }
 
@@ -41,15 +41,16 @@ export async function markdownToHtml(markdown: string, currSlug: string) {
   return htmlStr;
 }
 
-export async function getMDExcerpt(markdown: string, length: number = 500) {
-  const file = await remark()
-    .use(strip)
-    .process(markdown)
-  return file.toString().slice(0, length);
+export function getMDExcerpt(markdown: string, length: number = 500) {
+  const text = removeMd(markdown, {
+    stripListLeaders: false, 
+    gfm: true,
+  })
+  return text.slice(0, length);
 }
 
-export async function createNoteNode(title: string, content: string) {
-  const mdContentStr = await getMDExcerpt(content);
+export function createNoteNode(title: string, content: string) {
+  const mdContentStr = getMDExcerpt(content);
   const htmlStr = renderToStaticMarkup(NotePreview({ title, content: mdContentStr }))
   const noteNode = fromHtml(htmlStr);
   return noteNode;

@@ -6,10 +6,10 @@ import { getMDExcerpt } from './markdownToHtml'
 
 const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR)
 
-export async function getPostBySlug(slug: string, fields: string[] = []) {
+export function getPostBySlug(slug: string, fields: string[] = []) {
   const realSlug = slug.replace(/\.md$/, '')
   const fullPath = path.join(mdDir, `${realSlug}.md`)
-  const data = await parseFileToObj(fullPath);
+  const data = parseFileToObj(fullPath);
 
   type Items = {
     [key: string]: string
@@ -30,7 +30,7 @@ export async function getPostBySlug(slug: string, fields: string[] = []) {
   return items
 }
 
-async function parseFileToObj(pathToObj: string) {
+function parseFileToObj(pathToObj: string) {
   const fileContents = fs.readFileSync(pathToObj, 'utf8')
   const { data, content } = matter(fileContents)
 
@@ -38,7 +38,7 @@ async function parseFileToObj(pathToObj: string) {
 
   // modify obj
   if (typeof data['excerpt'] === 'undefined') {
-    data['excerpt'] = await getMDExcerpt(content, 500);
+    data['excerpt'] = getMDExcerpt(content, 500);
   }
   if (typeof data['title'] === 'undefined') {
     data['title'] = decodeURI(path.basename(pathToObj, '.md'))
@@ -49,18 +49,18 @@ async function parseFileToObj(pathToObj: string) {
   return data
 }
 
-export async function getAllPosts(fields: string[] = []) {
+export function getAllPosts(fields: string[] = []) {
   let files = getFilesRecursively(mdDir, /\.md/);
-  let posts = await Promise.all(files
-    .map((slug) => getPostBySlug(slug, fields)))
+  let posts = files
+    .map((slug) => getPostBySlug(slug, fields))
     // sort posts by date in descending order
-  posts = posts.sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
+    .sort((post1, post2) => (post1.date > post2.date ? -1 : 1))
   return posts
 }
 
-export async function getLinksMapping() {
+export function getLinksMapping() {
   const linksMapping = new Map<string, string[]>();
-  const postsMapping = new Map((await getAllPosts(['slug', 'content'])).map(i => [i.slug, i.content]));
+  const postsMapping = new Map((getAllPosts(['slug', 'content'])).map(i => [i.slug, i.content]));
   const allSlugs = new Set(postsMapping.keys());
   postsMapping.forEach((content, slug) => {
     const mdLink = /\[[^\[\]]+\]\(([^\(\)]+)\)/g

@@ -20,5 +20,6 @@
   text-decoration: underline;
 }
 .internal-link {
-  color: #0969da
+  color: #0969da;
+  background-color: rgb(243 250 251) !important;
 }

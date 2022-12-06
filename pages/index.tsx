@@ -41,7 +41,7 @@ export default function Index({ allPosts }: Props) {
 }
 
 export const getStaticProps = async () => {
-  const allPosts = await getAllPosts([
+  let allPosts = await getAllPosts([
     'title',
     'date',
     'slug',
@@ -50,6 +50,9 @@ export const getStaticProps = async () => {
     'excerpt',
   ])
 
+  // filter posts shown here
+  allPosts = allPosts.filter((post) => post.slug.startsWith('posts/'))
+  
   return {
     props: { allPosts },
   }

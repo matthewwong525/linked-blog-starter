@@ -45,8 +45,8 @@ export function getMDExcerpt(markdown: string, length: number = 500) {
   const text = removeMd(markdown, {
     stripListLeaders: false, 
     gfm: true,
-  })
-  return text.slice(0, length);
+  }) as string
+  return text.slice(0, length).trim();
 }
 
 export function createNoteNode(title: string, content: string) {

@@ -1,9 +1,20 @@
 import Head from 'next/head'
-import { CMS_NAME, HOME_OG_IMAGE_URL } from '../lib/constants'
+import Script from "next/script"
 
 const Meta = () => {
+  const titleText = `${process.env.NEXT_PUBLIC_TITLE} | ${process.env.NEXT_PUBLIC_TAGLINE}`
   return (
     <Head>
+      {/* Meta tags */}
+      <title>{titleText}</title>
+      <meta name="description" content={process.env.NEXT_PUBLIC_DESCRIPTION} />
+      <meta property="og:title" content={process.env.NEXT_PUBLIC_TITLE}/>
+      <meta name="og:description" content={process.env.NEXT_PUBLIC_DESCRIPTION} />
+      <meta property="og:site_name" content={process.env.NEXT_PUBLIC_TITLE}/>
+      <meta name="twitter:card" content="summary" />
+      <meta property="twitter:title" content={process.env.NEXT_PUBLIC_TAGLINE} />
+      <meta name="twitter:description" content={process.env.NEXT_PUBLIC_DESCRIPTION} />
+
       <link
         rel="apple-touch-icon"
         sizes="180x180"
@@ -32,11 +43,6 @@ const Meta = () => {
       <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
       <meta name="theme-color" content="#000" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
-      <meta
-        name="description"
-        content={`A statically generated blog example using Next.js and ${CMS_NAME}.`}
-      />
-      <meta property="og:image" content={HOME_OG_IMAGE_URL} />
     </Head>
   )
 }

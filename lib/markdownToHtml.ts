@@ -1,5 +1,4 @@
 import {unified} from 'unified'
-import {remark} from 'remark'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
@@ -10,7 +9,7 @@ import { getLinksMapping, getPostBySlug, getSlugFromHref, updateMarkdownLinks } 
 import removeMd from 'remove-markdown'
 import {Element} from 'hast-util-select'
 import { renderToStaticMarkup } from "react-dom/server"
-import NotePreview from '../components/note-preview'
+import NotePreview from '../components/misc/note-preview'
 import { fromHtml } from 'hast-util-from-html'
 
 

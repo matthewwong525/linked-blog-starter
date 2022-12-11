@@ -13,7 +13,7 @@ const PreviewLink = ({ href, children }: Props) => {
   const { data } = useSWR(`/api/post-preview/${href}`, fetcher)
   return (
     <span className="internal-link-container">
-      <Link href={href} className="internal-link">{children}</Link>
+      <Link as={href} href="/[...slug]" className="internal-link">{children}</Link>
       {data && (<NotePreview title={data.title} content={data.excerpt} />)}
     </span>
   );

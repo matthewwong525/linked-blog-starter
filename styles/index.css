@@ -2,24 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-.internal-link-container > .note-preview {
-  display: none;
-  position: absolute;
-  width: 350px;
-  z-index: 99999;
-  left:0;
-}
-
-.internal-link-container > .internal-link:hover + .note-preview {
-  display: block;
-}
-.internal-link-container {
-  position: relative;
-}
-.internal-link:hover {
-  text-decoration: underline;
-}
-.internal-link {
-  color: #0969da;
-  background-color: rgb(243 250 251) !important;
-}
+@import 'additional-styles/utils.css'

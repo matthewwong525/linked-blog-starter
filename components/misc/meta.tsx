@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Script from "next/script"
 
 const Meta = () => {
   const titleText = `${process.env.NEXT_PUBLIC_TITLE} | ${process.env.NEXT_PUBLIC_TAGLINE}`

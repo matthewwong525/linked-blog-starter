@@ -36,10 +36,10 @@ export default function Post({ post, backlinks }: Props) {
             <meta name="description" content={description} />
             <meta property="og:title" content={post.title}/>
             <meta name="og:description" content={description} />
-            {post.ogImage?.url ? <meta property="og:image" content={post.ogImage.url} /> : <meta property="og:image" content="favicon/512.png" />}
+            {post.ogImage?.url && <meta property="og:image" content={post.ogImage.url} />}
             <meta property="twitter:title" content={post.title} />
             <meta name="twitter:description" content={description} />
-            {post.ogImage?.url ? <meta property="twitter:image" content={post.ogImage.url} /> : <meta property="twitter:image" content="favicon/512.png" />}
+            {post.ogImage?.url && <meta property="twitter:image" content={post.ogImage.url} />}
           </Head>
           <PostSingle
             title={post.title}
@@ -71,7 +71,6 @@ export async function getStaticProps({ params }: Params) {
     'author',
     'content',
     'ogImage',
-    'coverImage',
   ])
   const content = await markdownToHtml(post.content || '', slug)
   const linkMapping = await getLinksMapping()

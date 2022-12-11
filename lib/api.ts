@@ -88,9 +88,12 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
   markdown = markdown.replaceAll(/(\[[^\[\]]+\]\([^\(\)]+)(\.md)(\))/g, "$1$3");
 
   // update image links
-  markdown = markdown.replaceAll(/(\[[^\[\]]*\]\()([^\(\)]+)(\))/g, (m, m1, m2, m3) => {
+  markdown = markdown.replaceAll(/(\[[^\[\]]*\]\()([^\(\)]+)(\))/g, (m, m1, m2: string, m3) => {
     const slugDir = path.join(...currSlug.split(path.sep).slice(0, -1))
-    const relLink = path.join(slugDir, m2)
+    let relLink = m2;
+    if (!m2.startsWith(slugDir)) {
+      relLink = path.join(slugDir, m2)
+    }
     const fileSlug = decodeURI(path.join(mdDir, relLink))
     if (fs.existsSync(fileSlug)) {
       const relAssetDir = path.relative('./public', process.env.MD_ASSET_DIR)

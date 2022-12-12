@@ -1,17 +1,24 @@
-# Host your second brain with Next.JS
+---
+title: A Customizable Obsidian Publish alternative using Next.JS
+---
 
-This repository is a modified version of the [blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) provided by Next.JS. Below are some added features of the [linked-blog-starter](https://github.com/matthewwong525/linked-blog-starter):
+# A Customizable Obsidian Publish alternative using Next.JS
+
+This repository is a modified version of the blog starter provided by Next.JS. Below are some added features of the [linked-blog-starter](https://github.com/matthewwong525/linked-blog-starter):
 
 * Automatically generated backlinks and link previews
-* [Works out of the box](notes/works-out-of-the-box-with-markdown-files.md) with your markdown files
+* [Works out of the box](works-out-of-the-box-with-markdown-files.md) with your markdown files (No configuration needed)
 * Supports markdown & Obsidian specific markdown syntax (via [obsidian-export](https://github.com/zoni/obsidian-export))
+* Embed "PreviewLinks" outside of the markdown files (See the footer in the [example](https://linked-blog-starter.vercel.app/home))
 * Highly customizable with Next.js, Tailwind v3 and React
 
-## How to use this with Obsidian markdown files
+## Why I created this?
 
-To use this with Obsidian, you'll need to use [obsidian-export](https://github.com/zoni/obsidian-export) to [convert your obsidian notes to common markdown](posts/convert-obsidian-notes-to-common-markdown.md) format. Once in the common markdown format, add the markdown files to the `/common_md` folder and the blog posts will be created.
+It's true that there are many Obsidian Publish alternatives, but, many of these solutions are hard to [customize](deploy-a-custom-linked-blog-starter.md), difficult to publish, and tend to [reinvent the wheel](linked-blog-starter-does-not-reinvent-wheel.md). With this repository, I want to create a simple template that takes care of everything. Here's what the publish workflow looks like after [setting everything up:](publish-your-obsidian-notes-with-linked-blog-starter.md)
 
-If you are tired of constantly running obsidian-export and manually deploying, see how I [automate this process with GitHub actions](posts/deploy-obsidian-notes-with-linked-blog-starter-and-github-actions.md)
+1. Write a note in `/publish` folder within Obsidian
+1. Run the backup command [using the Obsidian Git plugin](connect-obsidian-vault-with-github.md)
+1. Done. Your notes are published. 
 
 ## Demo
 
@@ -19,23 +26,12 @@ If you are tired of constantly running obsidian-export and manually deploying, s
 
 ## Deploy your own
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/matthewwong525/linked-blog-starter)
+Only deploy through this method, if you want to get a quick server up and running. Otherwise, I'd recommend following the [instructions to integrate this with your Obsidian Vault](publish-your-obsidian-notes-with-linked-blog-starter.md).
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/blog-starter&project-name=blog-starter&repository-name=blog-starter)
+Deploy the example using [Vercel](https://vercel.com/new/git/external?repository-url=https://github.com/matthewwong525/linked-blog-starter&project-name=linked-blog-starter&repository-name=linked-blog-starter) or preview live with [StackBlitz](https://stackblitz.com/github/matthewwong525/linked-blog-starter)
 
-### Related examples
+## Create a Custom Fork
 
-* [Fleeting Notes](https://fleetingnotes.app)
+Here is an example of how I [forked this repo](https://github.com/fleetingnotes/fleeting-notes-website) to create a landing page for [Fleeting Notes](https://www.fleetingnotes.app/). See how you can do something similar [here](deploy-a-custom-linked-blog-starter.md).
 
-## [Installation](notes/install-linked-blog-starter.md)
-
-1. Clone this repo by running `git clone https://github.com/matthewwong525/linked-blog-starter`
-1. `cd linked-blog-starter`
-1. `npm install`
-1. `npm run dev`
-
-# Notes
-
-* `linked-blog-starter` uses [Tailwind CSS](https://tailwindcss.com) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3).
-* Markdown files are [statically generated](notes/statically-generated.md)
-* Markdown is styled using [generated GitHub flavoured markdown](https://github.com/sindresorhus/github-markdown-css)
+![fn-website-demo.gif](attachments/fn-website-demo.gif)

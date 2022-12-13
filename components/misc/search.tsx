@@ -69,6 +69,7 @@ function Search({ visible, setVisible }) {
         {/* Search Results */}
         {searchResults.map((res) => (
           <PostPreview
+            key={res.item.slug}
             title={res.item.title}
             excerpt={res.item.excerpt}
             slug={res.item.slug}

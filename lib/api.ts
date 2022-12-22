@@ -94,10 +94,14 @@ export function updateMarkdownLinks(markdown: string, currSlug: string) {
     if (!m2.startsWith(slugDir)) {
       relLink = path.join(slugDir, m2)
     }
-    const fileSlug = decodeURI(path.join(mdDir, relLink))
-    if (fs.existsSync(fileSlug)) {
-      const relAssetDir = path.relative('./public', process.env.MD_ASSET_DIR)
-      const imgPath = path.join(relAssetDir, relLink)
+    const relAssetDir = path.relative('./public', process.env.MD_ASSET_DIR)
+    const fileSlugRel = decodeURI(path.join(mdDir, relLink))
+    const fileSlugAbs = decodeURI(path.join(mdDir, m2))
+    if (fs.existsSync(fileSlugRel)) {
+      const imgPath = path.join(relAssetDir, relLink);
+      return `${m1}/${imgPath}${m3}`
+    } else if (fs.existsSync(fileSlugAbs)) {
+      const imgPath = path.join(relAssetDir, m2);
       return `${m1}/${imgPath}${m3}`
     }
     return m;

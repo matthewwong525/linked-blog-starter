@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
 import { getPostBySlug, getAllPosts, getLinksMapping } from '../lib/api'
-import Head from 'next/head'
 import { markdownToHtml } from '../lib/markdownToHtml'
 import type PostType from '../interfaces/post'
 import path from 'path'
 import PostSingle from '../components/blog/post-single'
 import Layout from '../components/misc/layout'
+import { NextSeo } from 'next-seo'
 
 type Items = {
   title: string,
@@ -31,16 +31,21 @@ export default function Post({ post, backlinks }: Props) {
         <h1>Loading…</h1>
       ) : (
         <Layout>
-          <Head>
-            <title>{post.title}</title>
-            <meta name="description" content={description} />
-            <meta property="og:title" content={post.title}/>
-            <meta name="og:description" content={description} />
-            {post.ogImage?.url && <meta property="og:image" content={post.ogImage.url} />}
-            <meta property="twitter:title" content={post.title} />
-            <meta name="twitter:description" content={description} />
-            {post.ogImage?.url && <meta property="twitter:image" content={post.ogImage.url} />}
-          </Head>
+          <NextSeo
+            title={post.title}
+            description={description}
+            openGraph={{
+              title: post.title,
+              description,
+              type: 'article',
+              images: [{
+                url: (post.ogImage?.url) ? post.ogImage.url : "https://fleetingnotes.app/favicon/512.png",
+                width: (post.ogImage?.url) ? null: 512,
+                height: (post.ogImage?.url) ? null: 512,
+                type: null
+              }]
+            }}
+          />
           <PostSingle
             title={post.title}
             content={post.content}

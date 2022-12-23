@@ -34,6 +34,21 @@ function Search({ visible, setVisible }) {
     }
   }, [visible])
 
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        setVisible(true);
+      }
+      if (e.key === 'Escape') {
+        setVisible(false);
+      }
+    }
+    document.addEventListener("keydown", handleKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    }
+  }, [])
+
   useOutsideAlerter(containerRef, (e: MouseEvent) => {
     setVisible(false);
     e.stopPropagation();

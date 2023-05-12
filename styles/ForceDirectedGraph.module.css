@@ -1,0 +1,20 @@
+.linkWrapper {
+	width: 100%;
+}
+
+.link {
+	stroke: #999;
+	stroke-opacity: 0.6;
+}
+
+.node {
+	fill: #ccc;
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+.text {
+	font: 9px sans-serif;
+	letter-spacing: 1px;
+	pointer-events: cursor;
+}

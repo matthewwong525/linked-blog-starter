@@ -3,6 +3,7 @@ import Author from '../../interfaces/author';
 import Backlinks from '../misc/backlinks';
 import PostBody from './post-body';
 import PostMeta from './post-meta';
+import ForceDirectedGraph from '../misc/ForceDirectedGraph';
 
 type Props = {
   title: string,
@@ -61,7 +62,13 @@ function PostSingle({
                 <hr className="my-10 border border-dashed lg:block"/>
                 <aside className="relative lg:block lg:w-72 lg:ml-20 shrink-0">
                   <div>
-                    <h4 className="text-lg font-bold leading-snug tracking-tight mb-4">Backlinks</h4>
+                    <h4 className="text-lg font-bold leading-snug tracking-tight mb-4">
+											Graph view
+										</h4>
+										<div className="w-full h-72 relative note-preview rounded shadow-sm bg-white cursor-pointer hover:border-transparent">
+											<ForceDirectedGraph backlinks={backlinks} title={title} />
+										</div>
+                    <h4 className="text-lg font-bold mt-10 leading-snug tracking-tight mb-4">Backlinks</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
                       {
                         (Object.keys(backlinks).length > 0) && (

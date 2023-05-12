@@ -7,12 +7,13 @@ type Props = {
 		[k: string]: {
 			title: string;
 			excerpt: string;
+      slug:string
 		};
 	};
-	title: string;
+	slug: string;
 };
 
-const ForceDirectedGraph = ({ backlinks, title }: Props) => {
+const ForceDirectedGraph = ({ backlinks, slug }: Props) => {
 	const graphRef = useRef<SVGSVGElement>(null);
 
 	const getGraphView = () => {
@@ -38,19 +39,19 @@ const ForceDirectedGraph = ({ backlinks, title }: Props) => {
 			);
 
 		const links = Object.values(backlinks).map((value) => ({
-			source: value.title,
-			target: title,
+			source: value.slug,
+			target: slug,
 		}));
 
-		const testNode = Object.values(backlinks).map((value) => ({
-			node: value.title,
+		const nodes = Object.values(backlinks).map((value) => ({
+			node: value.slug,
 		}));
 
-		const nodes = [
+		const allNodes = [
 			{
-				node: title,
+				node: slug,
 			},
-			...testNode,
+			...nodes,
 		];
 
 		const dragStarted = (event: any, d: any) => {
@@ -84,7 +85,7 @@ const ForceDirectedGraph = ({ backlinks, title }: Props) => {
 			.append("g")
 			.attr("class", styles.node)
 			.selectAll("g")
-			.data(nodes)
+			.data(allNodes)
 			.join("g")
 			.on("mouseover", function () {
 				d3.select(this).style("fill", "red");
@@ -113,7 +114,7 @@ const ForceDirectedGraph = ({ backlinks, title }: Props) => {
 			.attr("stroke-opacity", 0.3)
 			.text((d) => d.node);
 
-		simulation.nodes(nodes).on("tick", () => {
+		simulation.nodes(allNodes).on("tick", () => {
 			link
 				.attr("x1", (d) => d.source.x)
 				.attr("y1", (d) => d.source.y)

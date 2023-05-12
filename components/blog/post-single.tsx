@@ -9,10 +9,12 @@ type Props = {
   title: string,
   content: string,
   date?: string,
+  slug: string;
   author?: Author,
   backlinks: { [k: string]: {
       title: string,
       excerpt: string,
+      slug: string;
     }
   }
 }
@@ -21,9 +23,11 @@ function PostSingle({
   title,
   date,
   author,
+  slug,
   content,
   backlinks
 }: Props) {
+  console.log('ps',slug)
   return (
     <section>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -66,7 +70,7 @@ function PostSingle({
 											Graph view
 										</h4>
 										<div className="w-full h-72 relative note-preview rounded shadow-sm bg-white cursor-pointer hover:border-transparent">
-											<ForceDirectedGraph backlinks={backlinks} title={title} />
+											<ForceDirectedGraph backlinks={backlinks} slug={slug}/>
 										</div>
                     <h4 className="text-lg font-bold mt-10 leading-snug tracking-tight mb-4">Backlinks</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">

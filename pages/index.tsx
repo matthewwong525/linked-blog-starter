@@ -1,5 +1,6 @@
 import MyHome from "../components/landing/my-home";
 import Layout from "../components/misc/layout";
+import PostList from "../components/blog/post-list";
 import { getAllPosts } from "../lib/api";
 import Post from '../interfaces/post';
 
@@ -7,6 +8,7 @@ export default function Home({ posts, pid, maxPid }: Props) {
   return (
     <Layout>
       <MyHome />
+      <PostList posts={posts || []} />
     </Layout>
   )
 }

@@ -3,14 +3,16 @@ import DateFormatter from "../misc/date-formatter"
 
 type Props = {
   author?: Author,
-  date?: string,
+  dateCreated?: string,
+  dateModified?: string
 }
 
 const PostMeta = ({
   author,
-  date
+  dateCreated,
+  dateModified
 }: Props) => {
-  if (!(author || date)) return null;
+  if (!(author || dateCreated)) return null;
   return (
     <>
       <div className="flex items-center">
@@ -29,8 +31,18 @@ const PostMeta = ({
               <a className="font-medium hover:underline" href="#0">{author.name}</a>
             </>
           )}
-          {(author && date) && <span className="text-gray-600"> · </span>}
-          {date && (<span className="text-gray-600"><DateFormatter dateString={date} /></span>)}
+          {author && dateCreated && <span className="text-gray-600"> · </span>}
+          {dateCreated && (
+            <span className="text-gray-600">
+              🗓 <DateFormatter dateString={dateCreated} />
+            </span>
+          )}
+          {dateCreated && dateModified && <span className="text-gray-600"> · </span>}
+          {dateModified && (
+            <span className="text-gray-600">
+              📝 <DateFormatter dateString={dateModified} />
+            </span>
+          )}
         </div>
       </div>
     </>

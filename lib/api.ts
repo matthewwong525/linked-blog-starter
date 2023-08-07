@@ -43,10 +43,15 @@ function parseFileToObj(pathToObj: string) {
   if (typeof data['title'] === 'undefined') {
     data['title'] = decodeURI(path.basename(pathToObj, '.md'))
   }
-  if (typeof data['date'] === 'object') {
-    data['date'] = data['date']?.toISOString()
-  } else if (typeof data['date'] !== 'undefined') {
-    data['date'] = data['date'].toString()
+  if (typeof data['dateCreated'] === 'object') {
+    data['dateCreated'] = data['dateCreated']?.toISOString()
+  } else if (typeof data['dateCreated'] !== 'undefined') {
+    data['dateCreated'] = data['dateCreated'].toString()
+  }
+  if (typeof data['dateModified'] === 'object') {
+    data['dateModified'] = data['dateModified']?.toISOString()
+  } else if (typeof data['dateModified'] !== 'undefined') {
+    data['dateModified'] = data['dateModified'].toString()
   }
   return data
 }

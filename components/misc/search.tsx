@@ -88,7 +88,8 @@ function Search({ visible, setVisible }) {
             title={res.item.title}
             excerpt={res.item.excerpt}
             slug={res.item.slug}
-            date={res.item.date}
+            dateCreated={res.item.dateCreated}
+            dateModified={res.item.dateModified}
             author={res.item.author}
           />
         ))}

@@ -7,7 +7,8 @@ import PostMeta from './post-meta';
 type Props = {
   title: string,
   content: string,
-  date?: string,
+  dateCreated?: string,
+  dateModified?: string,
   author?: Author,
   backlinks: { [k: string]: {
       title: string,
@@ -18,7 +19,8 @@ type Props = {
 
 function PostSingle({
   title,
-  date,
+  dateCreated,
+  dateModified,
   author,
   content,
   backlinks
@@ -45,9 +47,9 @@ function PostSingle({
                 <div>
 
                   {/* Article meta */}
-                  {(author || date) && (
+                  {(author || dateCreated) && (
                     <>
-                      <PostMeta author={author} date={date}/>
+                      <PostMeta author={author} dateCreated={dateCreated}/>
                       <hr className="w-16 h-px pt-px bg-gray-200 border-0 my-6" />
                     </>
                   )}

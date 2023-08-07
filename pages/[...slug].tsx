@@ -49,7 +49,8 @@ export default function Post({ post, backlinks }: Props) {
           <PostSingle
             title={post.title}
             content={post.content}
-            date={post.date}
+            dateCreated={post.dateCreated}
+            dateModified={post.dateModified}
             author={post.author}
             backlinks={backlinks}
           />
@@ -71,7 +72,8 @@ export async function getStaticProps({ params }: Params) {
   const post = await getPostBySlug(slug, [
     'title',
     'excerpt',
-    'date',
+    'dateCreated',
+    'dateModified',
     'slug',
     'author',
     'content',

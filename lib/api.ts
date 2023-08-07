@@ -85,9 +85,7 @@ export function getSlugFromHref (currSlug: string, href: string) {
 
 export function updateMarkdownLinks(markdown: string, currSlug: string) {
   // remove `.md` from links
-  console.log("before markdown: ", markdown);
   markdown = markdown.replaceAll(/(\[[^\[\]]+\]\([^\(\)]+)(\.md(?:#[^\)]*)?)(\))/g, "$1$3");
-  console.log("after markdown: ", markdown);
 
   // update image links
   markdown = markdown.replaceAll(/(\[[^\[\]]*\]\()([^\(\)]+)(\))/g, (m, m1, m2: string, m3) => {

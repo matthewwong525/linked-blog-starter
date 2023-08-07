@@ -3,12 +3,14 @@ import Layout from "../components/misc/layout";
 import PostList from "../components/blog/post-list";
 import { getAllPosts } from "../lib/api";
 import Post from '../interfaces/post';
+import Pagination from "../components/blog/pagination";
 
 export default function Home({ posts, pid, maxPid }: Props) {
   return (
     <Layout>
       <MyHome />
       <PostList posts={posts || []} />
+      <Pagination currPage={pid} maxPage={maxPid}/>
     </Layout>
   )
 }

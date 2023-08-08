@@ -7,7 +7,7 @@ import { getMDExcerpt } from './markdownToHtml'
 const mdDir = path.join(process.cwd(), process.env.COMMON_MD_DIR)
 
 export function getPostBySlug(slug: string, fields: string[] = []) {
-  const realSlug = slug.replace(/\.md$/, '')
+  const realSlug = slug.replace(/\.md(?:#[^\)]*)?$/, '')
   const fullPath = path.join(mdDir, `${realSlug}.md`)
   const data = parseFileToObj(fullPath);
 
@@ -52,7 +52,7 @@ function parseFileToObj(pathToObj: string) {
 }
 
 export function getAllPosts(fields: string[] = []) {
-  let files = getFilesRecursively(mdDir, /\.md/);
+  let files = getFilesRecursively(mdDir, /\.md(?:#[^\)]*)?/);
   let posts = files
     .map((slug) => getPostBySlug(slug, fields))
     // sort posts by date in descending order
@@ -80,7 +80,7 @@ export function getLinksMapping() {
 }
 
 export function getSlugFromHref (currSlug: string, href: string) {
-  return decodeURI(path.join(...currSlug.split(path.sep).slice(0, -1), href)).replace(/\.md$/, '')
+  return decodeURI(path.join(...currSlug.split(path.sep).slice(0, -1), href)).replace(/\.md(?:#[^\)]*)?$/, '')
 }
 
 export function updateMarkdownLinks(markdown: string, currSlug: string) {

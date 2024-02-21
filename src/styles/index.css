@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .pixel-perfect {
+        image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
+        image-rendering: -moz-crisp-edges; /* Firefox                        */
+        image-rendering: -o-crisp-edges; /* Opera                          */
+        image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+        image-rendering: pixelated; /* Chrome */
+        image-rendering: optimize-contrast; /* CSS3 Proposed                  */
+        -ms-interpolation-mode: nearest-neighbor;
+    }
+}
+
+@import "additional-styles/utils.css";
+
+html {
+    scroll-behavior: smooth;
+    font-family: "Poppins", sans-serif;
+    color: white;
+}
+
+.bg-main-gradient {
+    @apply bg-gradient-to-tl from-purple-400 to-blue-500 backdrop-blur-lg;
+    background-size: 140% 140%;
+    animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 10%;
+    }
+    50% {
+        background-position: 20% 10%;
+    }
+    100% {
+        background-position: 0% 10%;
+    }
+}
+
+#bg-grid {
+    background-image: radial-gradient(
+        rgba(220, 220, 220, 0.8) 1px,
+        transparent 0
+    );
+    background-size: 40px 40px;
+    background-position: 0px 0px;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply transition-all;
+}
+
+p {
+    @apply text-lg;
+}

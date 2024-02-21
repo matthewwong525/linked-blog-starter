@@ -33,6 +33,6 @@ jobs:
                   ECR_REPOSITORY: personal-site-24
                   IMAGE_TAG: ${{ github.sha }}
               run: |
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . --no-cache
+                  docker build --build-arg COMMON_MD_DIR=${{ secrets.COMMON_MD_DIR }} --build-arg MD_ASSET_DIR=${{ secrets.MD_ASSET_DIR }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . --no-cache
                   docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
                   echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

@@ -6,6 +6,12 @@ RUN npm install
 
 # build the next js folder
 FROM node:18-alpine as builder
+
+ARG COMMON_MD_DIR
+ARG MD_ASSET_DIR
+
+ENV COMMON_MD_DIR=$COMMON_MD_DIR
+ENV MD_ASSET_DIR=$MD_ASSET_DIR
 ENV NEXT_TELEMETRY_DISABLED 1
 
 WORKDIR /personal-site-24
